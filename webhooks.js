@@ -5,16 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import express from "express";
 import axios from "axios";
 import "dotenv/config";
 
-const app = express();
-app.use(express.json());
+const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN } = process.env;
 
-const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN, PORT } = process.env;
-
-app.post("/webhook", async (req, res) => {
+export const webhookPost = async (req, res) => {
   // log incoming messages
   console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
 
@@ -61,11 +57,11 @@ app.post("/webhook", async (req, res) => {
   }
 
   res.sendStatus(200);
-});
+};
 
 // accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
 // info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests
-app.get("/webhook", (req, res) => {
+export const webhookGet = (req, res) => {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
@@ -79,13 +75,4 @@ app.get("/webhook", (req, res) => {
     // respond with '403 Forbidden' if verify tokens do not match
     res.sendStatus(403);
   }
-});
-
-app.get("/", (req, res) => {
-  res.send(`<pre>Nothing to see here.
-Checkout README.md to start.</pre>`);
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is listening on port: ${PORT}`);
-});
+};
