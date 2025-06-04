@@ -11,15 +11,6 @@ import "dotenv/config";
 const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN } = process.env;
 
 export const webhookPost = async (req, res) => {
-  // req.body is a buffer, parse it
-  if (typeof req.body === "string") {
-    try {
-      req.body = JSON.parse(req.body);
-    } catch (error) {
-      console.error("Failed to parse request body:", error);
-      return res.sendStatus(400); // Bad Request
-    }
-  }
   console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
 
   // check if the webhook request contains a message

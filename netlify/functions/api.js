@@ -4,6 +4,8 @@ import { webhookGet, webhookPost } from "../../webhooks";
 
 const api = express();
 
+api.use(express.json());
+
 const router = Router();
 router.post("/webhook", webhookPost);
 router.get("/webhook", webhookGet);
