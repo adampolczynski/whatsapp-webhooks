@@ -1,4 +1,4 @@
-export async function findUserByPhoneNumber(phone) {
+export async function findUserByPhoneNumber(phone: string) {
   // Simulated database lookup
   const fakeDB = [
     { name: "John", phone: "14155552671" },

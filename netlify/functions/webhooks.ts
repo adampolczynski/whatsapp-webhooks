@@ -8,10 +8,11 @@
 import axios from "axios";
 import "dotenv/config";
 import { findUserByPhoneNumber } from "./lib.js";
+import { Request, Response } from "express";
 
 const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN } = process.env;
 
-export const webhookPost = async (req, res) => {
+export const webhookPost = async (req: Request, res: Response) => {
   const contentType =
     req.headers["content-type"] || req.headers["Content-Type"];
 
@@ -83,7 +84,7 @@ export const webhookPost = async (req, res) => {
 
 // accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
 // info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests
-export const webhookGet = (req, res) => {
+export const webhookGet = (req: Request, res: Response) => {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
