@@ -8,5 +8,9 @@
     "outDir": "dist",
     "rootDir": "."
   },
-  "include": ["netlify/functions/**/*.ts"]
+  "include": [
+    "netlify/functions/**/*.ts",
+    "netlify/lib/lib.ts",
+    "netlify/lib/webhooks.ts"
+  ]
 }

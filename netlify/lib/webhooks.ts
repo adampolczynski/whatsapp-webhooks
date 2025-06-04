@@ -7,23 +7,12 @@
 
 import axios from "axios";
 import "dotenv/config";
-import { findUserByPhoneNumber } from "./lib.js";
+import { findUserByPhoneNumber } from "./lib";
 import { Request, Response } from "express";
 
 const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN } = process.env;
 
 export const webhookPost = async (req: Request, res: Response) => {
-  const contentType =
-    req.headers["content-type"] || req.headers["Content-Type"];
-
-  // If the request is JSON, parse it
-  let body;
-  if (contentType === "application/json") {
-    body = JSON.parse(req.body); // event.body is a raw string
-  } else {
-    body = req.body; // fallback
-  }
-
   console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
 
   // check if the webhook request contains a message
