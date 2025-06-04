@@ -7,6 +7,7 @@
 
 import axios from "axios";
 import "dotenv/config";
+import { findUserByPhoneNumber } from "./lib.js";
 
 const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN } = process.env;
 
