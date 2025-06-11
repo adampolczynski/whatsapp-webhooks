@@ -7,13 +7,36 @@
 
 import axios from "axios";
 import "dotenv/config";
-import { findUserByPhoneNumber } from "./lib";
+import { findUserByPhoneNumber, sendWhatsAppMessage } from "./lib";
 import { Request, Response } from "express";
 
 const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN } = process.env;
 
 export const webhookPost = async (req: Request, res: Response) => {
   console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
+
+  const message1 = req.body.messages[0];
+
+  const business_phone_number_id =
+    req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
+  if (
+    message1 &&
+    message1.interactive &&
+    message1.interactive.type === "nfm_reply"
+  ) {
+    const responseJson = JSON.parse(
+      message1.interactive.nfm_reply.response_json
+    );
+    console.log("Received Flow Response:", responseJson);
+
+    // Process the response as needed
+    // For example, send a confirmation message back to the user
+    sendWhatsAppMessage(
+      message1.from,
+      "Thank you for your response!",
+      business_phone_number_id
+    );
+  }
 
   // check if the webhook request contains a message
   // details on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages

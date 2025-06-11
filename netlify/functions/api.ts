@@ -4,7 +4,6 @@ import { webhookGet, webhookPost } from "../lib/webhooks";
 
 const api = express();
 api.use(express.json());
-import { Buffer } from "buffer";
 
 api.use((req, res, next) => {
   let data = "";
