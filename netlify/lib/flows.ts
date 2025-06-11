@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 
 export const signUpFlow = {
+  type: "interactive",
   interactive: {
     type: "flow",
     header: {
