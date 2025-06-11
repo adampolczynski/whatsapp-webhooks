@@ -1,5 +1,6 @@
 import axios from "axios";
 import { randomUUID } from "crypto";
+import { signUpFlow } from "./flows";
 
 const { GRAPH_API_TOKEN } = process.env;
 
@@ -39,7 +40,24 @@ export const sendMessage = async (
       context: {
         message_id: originalMessageId,
       },
-      ...(flow ?? {}),
+    },
+  });
+};
+export const sendFlowMessage = async (
+  to: string,
+  businessPhoneNumberId: string,
+  originalMessageId: string
+) => {
+  await axios({
+    method: "POST",
+    url: `${URL}/${businessPhoneNumberId}/messages`,
+    headers: {
+      Authorization: `Bearer ${GRAPH_API_TOKEN}`,
+    },
+    data: {
+      messaging_product: "whatsapp",
+      to,
+      ...signUpFlow,
     },
   });
 };

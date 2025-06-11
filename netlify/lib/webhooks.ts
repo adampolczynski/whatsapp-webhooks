@@ -1,6 +1,10 @@
 import "dotenv/config";
-import { findUserByPhoneNumber, sendMessage, readMessage } from "./lib";
-import { signUpFlow } from "./flows";
+import {
+  findUserByPhoneNumber,
+  sendMessage,
+  readMessage,
+  sendFlowMessage,
+} from "./lib";
 import { Request, Response } from "express";
 
 const { WEBHOOK_VERIFY_TOKEN } = process.env;
@@ -28,13 +32,7 @@ export const webhookPost = async (req: Request, res: Response) => {
         message.id
       );
 
-      await sendMessage(
-        message.from,
-        `Hello! Seems like you don't have an account yet, do you want to create one?`,
-        businessPhoneNumberId,
-        message.id,
-        signUpFlow
-      );
+      await sendFlowMessage(message.from, businessPhoneNumberId, message.id);
       // TODO: Send message or start Flow
     } else {
       console.log("User not found");
