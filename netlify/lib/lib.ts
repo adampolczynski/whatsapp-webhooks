@@ -1,6 +1,12 @@
 import axios from "axios";
+import { randomUUID } from "crypto";
 
 const { GRAPH_API_TOKEN } = process.env;
+
+const BASE_GRAPH_API_URL = "https://graph.facebook.com";
+const GRAPH_API_VERSION = "v23.0";
+
+const URL = `${BASE_GRAPH_API_URL}/${GRAPH_API_VERSION}`;
 
 export const findUserByPhoneNumber = async (phone: string) => {
   // Simulated database lookup
@@ -13,40 +19,45 @@ export const findUserByPhoneNumber = async (phone: string) => {
   return fakeDB.find((user) => user.phone === phone);
 };
 
-export const sendWhatsAppMessage = async (
+export const sendMessage = async (
   to: string,
   message: string,
-  business_phone_number_id: string
+  businessPhoneNumberId: string,
+  originalMessageId: string,
+  flow?: any
 ) => {
-  // Implement your logic to send a WhatsApp message
-  // This could involve calling the WhatsApp Business API or another service
-  console.log(`Sending message to ${to}: ${message}`);
-
-  const url = `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`;
-
-  const headers = {
-    Authorization: `Bearer ${GRAPH_API_TOKEN}`,
-    "Content-Type": "application/json",
-  };
-
-  const data = {
-    messaging_product: "whatsapp",
-    to: to,
-    type: "text",
-    text: {
-      body: message,
+  await axios({
+    method: "POST",
+    url: `${URL}/${businessPhoneNumberId}/messages`,
+    headers: {
+      Authorization: `Bearer ${GRAPH_API_TOKEN}`,
     },
-  };
+    data: {
+      messaging_product: "whatsapp",
+      to,
+      text: message,
+      context: {
+        message_id: originalMessageId,
+      },
+      ...(flow ?? {}),
+    },
+  });
+};
 
-  axios
-    .post(url, data, { headers })
-    .then((response) => {
-      console.log("Message sent successfully:", response.data);
-    })
-    .catch((error) => {
-      console.error(
-        "Error sending message:",
-        error.response ? error.response.data : error.message
-      );
-    });
+export const readMessage = async (
+  businessPhoneNumberId: string,
+  originalMessageId: string
+) => {
+  await axios({
+    method: "POST",
+    url: `${URL}/${businessPhoneNumberId}/messages`,
+    headers: {
+      Authorization: `Bearer ${GRAPH_API_TOKEN}`,
+    },
+    data: {
+      messaging_product: "whatsapp",
+      status: "read",
+      message_id: originalMessageId,
+    },
+  });
 };

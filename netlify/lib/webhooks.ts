@@ -1,92 +1,49 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-import axios from "axios";
 import "dotenv/config";
-import { findUserByPhoneNumber, sendWhatsAppMessage } from "./lib";
+import { findUserByPhoneNumber, sendMessage, readMessage } from "./lib";
+import { signUpFlow } from "./flows";
 import { Request, Response } from "express";
 
-const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN } = process.env;
+const { WEBHOOK_VERIFY_TOKEN } = process.env;
 
 export const webhookPost = async (req: Request, res: Response) => {
   console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
 
-  // const message1 = req.body.messages[0];
-
-  // const business_phone_number_id =
-  //   req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
-  // if (
-  //   message1 &&
-  //   message1.interactive &&
-  //   message1.interactive.type === "nfm_reply"
-  // ) {
-  //   const responseJson = JSON.parse(
-  //     message1.interactive.nfm_reply.response_json
-  //   );
-  //   console.log("Received Flow Response:", responseJson);
-
-  //   // Process the response as needed
-  //   // For example, send a confirmation message back to the user
-  //   sendWhatsAppMessage(
-  //     message1.from,
-  //     "Thank you for your response!",
-  //     business_phone_number_id
-  //   );
-  // }
-
-  // check if the webhook request contains a message
-  // details on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
 
-  // check if the incoming message contains text
   if (message?.type === "text") {
-    // extract the business number to send the reply from it
-    const business_phone_number_id =
+    const businessPhoneNumberId =
       req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
 
-    // send a reply message as per the docs here https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages
-    await axios({
-      method: "POST",
-      url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
-      headers: {
-        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
-      },
-      data: {
-        messaging_product: "whatsapp",
-        to: message.from,
-        text: { body: "Echo: " + message.text.body },
-        context: {
-          message_id: message.id, // shows the message as a reply to the original user message
-        },
-      },
-    });
-
     // mark incoming message as read
-    await axios({
-      method: "POST",
-      url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
-      headers: {
-        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
-      },
-      data: {
-        messaging_product: "whatsapp",
-        status: "read",
-        message_id: message.id,
-      },
-    });
+    await readMessage(businessPhoneNumberId, message.id);
 
-    const phone = message.from;
-    const user = await findUserByPhoneNumber(phone);
+    const user = await findUserByPhoneNumber(message.from);
 
     if (user) {
       console.log("User found:", user);
+      await sendMessage(
+        message.from,
+        `Hello ${user.name}! How can I assist you today?`,
+        businessPhoneNumberId,
+        message.id
+      );
+
+      await sendMessage(
+        message.from,
+        `Hello! Seems like you don't have an account yet, do you want to create one?`,
+        businessPhoneNumberId,
+        message.id,
+        signUpFlow
+      );
       // TODO: Send message or start Flow
     } else {
       console.log("User not found");
+      await sendMessage(
+        message.from,
+        `Hello! Seems like you don't have an account yet, do you want to create one?`,
+        businessPhoneNumberId,
+        message.id
+      );
       // Optionally send a reply or trigger an onboarding flow
     }
   }
@@ -94,20 +51,15 @@ export const webhookPost = async (req: Request, res: Response) => {
   res.sendStatus(200);
 };
 
-// accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
-// info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests
 export const webhookGet = (req: Request, res: Response) => {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
-  // check the mode and token sent are correct
   if (mode === "subscribe" && token === WEBHOOK_VERIFY_TOKEN) {
-    // respond with 200 OK and challenge token from the request
     res.status(200).send(challenge);
     console.log("Webhook verified successfully!");
   } else {
-    // respond with '403 Forbidden' if verify tokens do not match
     res.sendStatus(403);
   }
 };

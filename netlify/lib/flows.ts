@@ -1,0 +1,35 @@
+import { randomUUID } from "crypto";
+
+export const signUpFlow = {
+  interactive: {
+    type: "flow",
+    header: {
+      type: "text",
+      text: "SignUp header",
+    },
+    body: {
+      text: "SignUp body",
+    },
+    footer: {
+      text: "SignUp footer",
+    },
+    action: {
+      name: "flow",
+      parameters: {
+        flow_message_version: "3",
+        flow_token: randomUUID(),
+        flow_id: "1",
+        flow_cta: "SignUp!",
+        flow_action: "data_exchange", // navigate | data_exchange
+        flow_action_payload: {
+          // screen: "SCREEN_NAME", // only with navigate
+          data: {
+            product_name: "name",
+            product_description: "description",
+            product_price: 100,
+          },
+        },
+      },
+    },
+  },
+};
