@@ -24,8 +24,7 @@ export const sendMessage = async (
   to: string,
   message: string,
   businessPhoneNumberId: string,
-  originalMessageId: string,
-  flow?: any
+  originalMessageId: string
 ) => {
   await axios({
     method: "POST",
@@ -35,8 +34,12 @@ export const sendMessage = async (
     },
     data: {
       messaging_product: "whatsapp",
+      type: "text",
       to,
-      text: message,
+      text: {
+        // "preview_url": <ENABLE_LINK_PREVIEW>,
+        body: message,
+      },
       context: {
         message_id: originalMessageId,
       },
@@ -45,8 +48,7 @@ export const sendMessage = async (
 };
 export const sendFlowMessage = async (
   to: string,
-  businessPhoneNumberId: string,
-  originalMessageId: string
+  businessPhoneNumberId: string
 ) => {
   await axios({
     method: "POST",
