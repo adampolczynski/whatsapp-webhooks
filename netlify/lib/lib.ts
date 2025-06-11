@@ -61,3 +61,20 @@ export const readMessage = async (
     },
   });
 };
+
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response) {
+      console.error(
+        `Error: ${error.response.status} - ${error.response.data.error.message}`
+      );
+      console.warn(error.response.data);
+    } else {
+      console.error("Error:", error.message);
+    }
+    return Promise.reject(error);
+  }
+);
