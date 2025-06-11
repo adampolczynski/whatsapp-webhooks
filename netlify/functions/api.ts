@@ -6,7 +6,7 @@ const api = express();
 api.use(express.json());
 
 api.use((req, res, next) => {
-  console.log("incoming request");
+  console.log("incoming request", req.method, req.path);
   let data = "";
   req.on("data", (chunk) => {
     data += chunk;
