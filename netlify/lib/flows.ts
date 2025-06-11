@@ -4,16 +4,16 @@ export const signUpFlow = {
   type: "interactive",
   interactive: {
     type: "flow",
-    header: {
-      type: "text",
-      text: "SignUp header",
-    },
-    body: {
-      text: "SignUp body",
-    },
-    footer: {
-      text: "SignUp footer",
-    },
+    // header: {
+    //   type: "text",
+    //   text: "SignUp header",
+    // },
+    // body: {
+    //   text: "SignUp body",
+    // },
+    // footer: {
+    //   text: "SignUp footer",
+    // },
     action: {
       name: "flow",
       parameters: {
