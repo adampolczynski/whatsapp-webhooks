@@ -19,7 +19,7 @@ export const signUpFlow = {
       parameters: {
         flow_message_version: "3",
         flow_token: randomUUID(),
-        flow_id: "1",
+        flow_id: "1828442997756651",
         flow_cta: "SignUp!",
         flow_action: "data_exchange", // navigate | data_exchange
         flow_action_payload: {
