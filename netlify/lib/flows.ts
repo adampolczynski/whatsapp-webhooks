@@ -1,5 +1,4 @@
 import { randomUUID } from "crypto";
-import { logoBase64 } from "./logo";
 
 export const signUpFlow = (mode: "sign_up" | "sign_in") => ({
   type: "interactive",
@@ -15,7 +14,7 @@ export const signUpFlow = (mode: "sign_up" | "sign_in") => ({
       text: `${mode === "sign_up" ? "Sign up" : "Login"} to continue`,
     },
     footer: {
-      text: "Send money to your loved ones in minutes! Minit Money is an easy-to-use remittance app that makes sending money home easy, safe and affordable.",
+      text: "Send money to your loved ones in minutes!",
     },
     action: {
       name: "flow",
@@ -37,3 +36,44 @@ export const signUpFlow = (mode: "sign_up" | "sign_in") => ({
     },
   },
 });
+
+async function buildFlowWithDynamicOptions() {
+  // Step 1: Fetch options from your API
+  // const response = await axios.get("https://yourapi.com/items");
+  // const items = response.data; // assume array of { id, name }
+
+  // // Step 2: Map items to WhatsApp Flow option format
+  // const options = items.map((item, index) => ({
+  //   ref: `option_${index + 1}`,
+  //   title: item.name,
+  // }));
+
+  // Step 3: Build flow JSON
+  const flowJson = {
+    name: "dynamic_options_flow",
+    description: "Select an item from the list",
+    screens: [
+      {
+        ref: "screen_1",
+        title: "Choose an Option",
+        blocks: [
+          {
+            type: "question",
+            ref: "dropdown_question",
+            text: "Please select an option from the list below:",
+            response_type: "selection",
+            options: [
+              {
+                ref: "option_1",
+                title: "Loading...",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    version: "1.0",
+  };
+
+  return flowJson;
+}
