@@ -48,7 +48,8 @@ export const sendMessage = async (
 };
 export const sendFlowMessage = async (
   to: string,
-  businessPhoneNumberId: string
+  businessPhoneNumberId: string,
+  mode: "sign_up" | "sign_in"
 ) => {
   await axios({
     method: "POST",
@@ -59,7 +60,7 @@ export const sendFlowMessage = async (
     data: {
       messaging_product: "whatsapp",
       to,
-      ...signUpFlow,
+      ...signUpFlow(mode),
     },
   });
 };

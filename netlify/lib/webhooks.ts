@@ -32,7 +32,7 @@ export const webhookPost = async (req: Request, res: Response) => {
         message.id
       );
 
-      await sendFlowMessage(message.from, businessPhoneNumberId);
+      await sendFlowMessage(message.from, businessPhoneNumberId, "sign_in");
       // TODO: Send message or start Flow
     } else {
       console.log("User not found");
@@ -42,6 +42,8 @@ export const webhookPost = async (req: Request, res: Response) => {
         businessPhoneNumberId,
         message.id
       );
+
+      await sendFlowMessage(message.from, businessPhoneNumberId, "sign_up");
       // Optionally send a reply or trigger an onboarding flow
     }
   }
