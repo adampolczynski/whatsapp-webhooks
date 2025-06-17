@@ -4,6 +4,7 @@ import {
   sendMessage,
   readMessage,
   sendFlowMessage,
+  sendDropdownFlowMessage,
 } from "./lib";
 import { Request, Response } from "express";
 
@@ -15,7 +16,7 @@ export const webhookPost = async (req: Request, res: Response) => {
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
   console.warn("message", message);
 
-  if (message?.type === "text") {
+  if (message?.type === "text" && message) {
     const businessPhoneNumberId =
       req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
 
@@ -34,6 +35,8 @@ export const webhookPost = async (req: Request, res: Response) => {
       );
 
       await sendFlowMessage(message.from, businessPhoneNumberId, "sign_in");
+      //
+      await sendDropdownFlowMessage(message.from, businessPhoneNumberId);
       // TODO: Send message or start Flow
     } else {
       console.log("User not found");

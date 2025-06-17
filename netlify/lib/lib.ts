@@ -1,6 +1,6 @@
 import axios from "axios";
 import { randomUUID } from "crypto";
-import { signUpFlow } from "./flows";
+import { dropdownFlow, signUpFlow } from "./flows";
 
 const { GRAPH_API_TOKEN } = process.env;
 
@@ -61,6 +61,24 @@ export const sendFlowMessage = async (
       messaging_product: "whatsapp",
       to,
       ...signUpFlow(mode),
+    },
+  });
+};
+
+export const sendDropdownFlowMessage = async (
+  to: string,
+  businessPhoneNumberId: string
+) => {
+  await axios({
+    method: "POST",
+    url: `${URL}/${businessPhoneNumberId}/messages`,
+    headers: {
+      Authorization: `Bearer ${GRAPH_API_TOKEN}`,
+    },
+    data: {
+      messaging_product: "whatsapp",
+      to,
+      ...dropdownFlow(),
     },
   });
 };
