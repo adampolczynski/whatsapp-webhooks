@@ -13,6 +13,7 @@ export const webhookPost = async (req: Request, res: Response) => {
   console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
 
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
+  console.warn("message", message);
 
   if (message?.type === "text") {
     const businessPhoneNumberId =

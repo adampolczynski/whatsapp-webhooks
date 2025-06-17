@@ -6,7 +6,7 @@ export const signUpFlow = (mode: "sign_up" | "sign_in") => ({
   interactive: {
     type: "flow",
     header: {
-      type: "image",
+      type: "Image",
       src: logoBase64,
     },
     body: {
