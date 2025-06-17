@@ -23,7 +23,7 @@ export const signUpFlow = {
         flow_cta: "SignUp!",
         flow_action: "data_exchange", // navigate | data_exchange
         flow_action_payload: {
-          // screen: "SCREEN_NAME", // only with navigate
+          screen: "SIGN_IN", // only with navigate
           data: {
             product_name: "name",
             product_description: "description",
