@@ -21,7 +21,7 @@ export const signUpFlow = {
         flow_token: randomUUID(),
         flow_id: "1828442997756651",
         flow_cta: "SignUp!",
-        flow_action: "data_exchange", // navigate | data_exchange
+        flow_action: "navigate", // navigate | data_exchange
         flow_action_payload: {
           screen: "SIGN_IN", // only with navigate
           data: {
